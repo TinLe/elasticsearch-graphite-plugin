@@ -47,7 +47,7 @@ public class GraphiteReporter {
     private NodeStats nodeStats;
     private final Pattern graphiteInclusionRegex;
     private final Pattern graphiteExclusionRegex;
-    private final long timestamp;
+    private final String timestamp;
     private final NodeIndicesStats nodeIndicesStats;
 
 
@@ -61,7 +61,7 @@ public class GraphiteReporter {
         this.nodeStats = nodeStats;
         this.graphiteInclusionRegex = graphiteInclusionRegex;
         this.graphiteExclusionRegex = graphiteExclusionRegex;
-        this.timestamp = System.currentTimeMillis() / 1000;
+        this.timestamp = Long.toString(System.currentTimeMillis() / 1000);
         this.nodeIndicesStats = nodeIndicesStats;
     }
 
@@ -315,8 +315,7 @@ public class GraphiteReporter {
         }
     }
 
-    private void sendSearchStatsStats(String group, SearchStats.Stats searchStats) {
-        String type = buildMetricName("search.stats.") + group;
+    private void sendSearchStatsStats(String type, SearchStats.Stats searchStats) {
         sendInt(type, "queryCount", searchStats.getQueryCount());
         sendInt(type, "queryTimeInMillis", searchStats.getQueryTimeInMillis());
         sendInt(type, "queryCurrent", searchStats.getQueryCurrent());
@@ -397,7 +396,7 @@ public class GraphiteReporter {
             writer.write(' ');
             writer.write(value);
             writer.write(' ');
-            writer.write(Long.toString(timestamp));
+            writer.write(timestamp);
             writer.write('\n');
             writer.flush();
         } catch (IOException e) {
